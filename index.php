@@ -10,14 +10,14 @@ use Eqs\Service\DevicesLogs;
  * Config Path for Logs and Database Source(mdb)
  */
 define('APP_ROOT',dirname(__FILE__).DIRECTORY_SEPARATOR);
-define('DATABASE_FILE_PATH','E://testsite//site1//attendance//eSSLSmartOffice.mdb');
+define('DATABASE_FILE_PATH','c://eSSLSmartOffice.mdb');
 define('INDEX_FILE',APP_ROOT.'logs'.DIRECTORY_SEPARATOR.'0-index.txt');
 try{
 
     $responseHandler   =   new Response();
     $deviceLogs =  new DevicesLogs();
     $responseData = $deviceLogs->getDevicesAttendanceLogs();
-
+	echo count($responseData) .' Records Found'.chr(10);
     if(count($responseData) > 0){
 
         $responseHandler->saveRecords($responseData);

@@ -36,7 +36,7 @@ class DevicesLogs
     function getFilterInputs()
     {
         $filterInputs = [];
-        $filterInputs['date']  = date('Y-m-d'); //Default to current Date
+        $filterInputs['date']  = '2017-08-31'; date('Y-m-d'); //Default to current Date
         $filterInputs['hour']  = date('H'); //Default to current Hour
         return $filterInputs;
     }
@@ -58,21 +58,19 @@ class DevicesLogs
         $filterInputs = $this->getFilterInputs();
         $logTable = 'DeviceLogs_'.intval(date('m',strtotime($filterInputs['date']))).'_'.date('Y',strtotime($filterInputs['date'])); //Device Log based on Month and Year
         $cacheName  =  'dev_logs_date_'.$filterInputs['date'].'_hour_'.$filterInputs['hour'];
-        $hourSpanForData = 1;
-        $endTime = $this->formatDate($filterInputs['date'], $filterInputs['hour']+$hourSpanForData);
-
-        //BindParams
+        $endTime = $this->formatDate($filterInputs['date'], $filterInputs['hour']);
+        
         $params = ['startUid'=> '1800000', 'endUid'=> '1800099', 'startLogId'=> $startLogId, 'endTime'=> $endTime] ;
-        //Build SQL Query//
-        $selectQuery = 'SELECT e.EmployeeCode,e.EmployeeName,d.DeviceLogId,d.DeviceId,d.UserId,d.Direction,d.AttDirection,d.LogDate';
+        		
+        $selectQuery = 'SELECT TOP 4000 e.EmployeeCode,e.EmployeeName,d.DeviceLogId,d.DeviceId,d.UserId,d.Direction,d.AttDirection,d.LogDate';
         $selectQuery.=' FROM '.$logTable.' d INNER JOIN `Employees` e on e.`EmployeeCode` = d.`UserId` ';
         $selectQuery.= ' WHERE d.`UserId` >=:startUid AND d.`userId`<=:endUid' ;
         $selectQuery.= ' AND ( d.`DeviceId`=6 OR d.`DeviceId`=8  OR d.`DeviceId`=11) ';
         $selectQuery.= ' AND  d.`DeviceLogId` >:startLogId AND d.`logDate`<=:endTime' ;
-        $selectQuery.= ' ORDER BY d.`UserId` ASC, d.`logDate` ASC ' ;
+        $selectQuery.= ' ORDER BY d.`DeviceLogId` ASC' ;
 
         $log->info('Exec Query :: '.$selectQuery);
-        $log->info('Exec Vars :: '.serialize($params));
+        $log->info('Exec Vars :: '.json_encode($params));
 
         $databaseInstance   =   Access::getSingletonInstance();
         $result = $databaseInstance->fetchResults($selectQuery, $params );
