@@ -36,7 +36,7 @@ class DevicesLogs
     function getFilterInputs()
     {
         $filterInputs = [];
-        $filterInputs['date']  = '2017-08-31'; date('Y-m-d'); //Default to current Date
+        $filterInputs['date']  = date('Y-m-d'); //Default to current Date
         $filterInputs['hour']  = date('H'); //Default to current Hour
         return $filterInputs;
     }
